@@ -1,0 +1,32 @@
+.progress {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0,1fr));
+    grid-gap:3px;
+    height: 3px;
+    text-align: right;
+  }
+  
+  .progress div {
+    border-top: 3px solid rgba(0,0,0,0.12);
+    color: rgba(0,0,0,0.12);
+  }
+  
+  .progress.failed div {
+    border-color: #ff3c41;
+    color: #ff3c41;
+  }
+  
+  .progress div.scheduled {
+    border-color: #fabb42;
+    color: #fabb42;
+  }
+  
+  .progress div.done {
+    border-color: #0ebeff;
+    color: #0ebeff;
+  }
+  
+  .progress > div:after {
+    content: attr(data-date);
+    align-self: flex-end;
+  }

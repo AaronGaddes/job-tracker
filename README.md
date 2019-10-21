@@ -9,7 +9,7 @@ A simple app to track jobs the user has applied for and their current status.
         * [ ] Add Login Route
     * [ ] Add Jobs Route
 * [ ] Create Client
-    * [ ] Generate Vue App
+    * [ ] Generate App
         * [ ] Add Signup Page
         * [ ] Add Signin Page
-        * [ ] Add Jobs Page
+        * [x] Add Jobs Page

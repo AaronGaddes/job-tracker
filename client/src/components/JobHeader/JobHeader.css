@@ -1,0 +1,22 @@
+.header {
+    display: flex;
+    padding: 1rem;
+  }
+
+.logo {
+flex: 0 0 auto;
+margin-right: 1rem;
+border-radius: 50%;
+width: 2.5rem;
+height: 2.5rem;
+object-fit: cover;
+}
+
+.title {
+flex: 1 1 auto;
+color: rgba(0, 0, 0, 0.87);
+}
+
+.job-type, .company {
+color: rgba(0, 0, 0, 0.54);
+}

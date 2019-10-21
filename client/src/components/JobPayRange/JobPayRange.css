@@ -1,0 +1,13 @@
+.renumeration {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  
+  .quoted {
+    font-size: 1.5rem;
+  }
+  
+  .quoted > .period {
+    font-size: 0.875rem;
+  }

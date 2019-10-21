@@ -1,0 +1,39 @@
+.job {
+    color: rgba(0, 0, 0, 0.54);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    transform: scale(0.95);
+    transition: transform 0.2s linear,
+      box-shadow 0.2s linear;
+  }
+
+  .job.failed {
+    background: rgba(0,0,0,0.12);
+  }
+  
+  .job:hover {
+    transform: scale(1);
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+  }
+  
+  .address {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-top: 1px solid rgba(0,0,0,0.12);
+    padding: 0 1rem;
+  }
+  
+  .address i {
+    margin-right: 0.5rem;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
