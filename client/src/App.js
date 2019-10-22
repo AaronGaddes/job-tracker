@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+
+import Dialog from '@material-ui/core/Dialog';
+
 import './App.css';
 import Navbar from './components/Navbar';
 import JobList from './components/JobList/JobList';
+
+import JobEditDialog from './components/JobEditDialog/JobEditDialog';
 
 class App extends Component {
   constructor(props) {
@@ -50,11 +55,27 @@ class App extends Component {
                     max: 90000,
                     quoted: 80000,
                     period: 'anum'
-                }
+                },
+                failed: false
             }
-        ]
+        ],
+        selectedJob: null
     }
+
+    this.selectJob = this.selectJob.bind(this);
   }
+
+  selectJob(job) {
+    this.setState({
+      selectedJob: job
+    });
+    console.log(job)
+  }
+
+  handleDialogClose = () => {
+    this.selectJob(null);
+  };
+
   render(){
     return (
       <div className="App">
@@ -62,6 +83,11 @@ class App extends Component {
         <JobList
           jobs={this.state.jobs}
           userSkills={this.state.user.skills}
+          selectJob={this.selectJob}
+        />
+        <JobEditDialog
+          job={this.state.selectedJob}
+          handleClose={this.handleDialogClose}
         />
       </div>
     )

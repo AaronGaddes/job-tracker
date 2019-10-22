@@ -8,10 +8,10 @@ import JobProgress from '../JobProgress/JobProgress';
 
 export default function JobCard(props) {
 
-    let { job, userSkills } = props;
+    let { job, userSkills, onClick } = props;
 
   return (
-    <div className="job">
+    <div className={`job ${job.failed ? 'failed' : ''}`} onClick={()=>onClick(job)}>
       <JobHeader
         logo={job.logo}
         title={job.title}
@@ -20,6 +20,7 @@ export default function JobCard(props) {
       />
       <JobProgress
         progress={job.progress}
+        failed={job.failed}
       />
       <div className="content">
         <JobPayRange
