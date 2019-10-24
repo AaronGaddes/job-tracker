@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import JobHeader from '../JobHeader/JobHeader';
 
@@ -54,7 +55,7 @@ function JobEditDialog(props) {
               <div className={styles.content}>
                 {(stage.doneDate || stage.scheduledDate) ? <span className={styles.date}>{stage.doneDate || stage.scheduledDate}</span> : ''}
                 <div>Notes:</div>
-                <div contentEditable className={styles.notes}>This is some notes</div>
+                <TextareaAutosize className={styles.notes}>This is some notes</TextareaAutosize>
             </div>
           </div>
           ))}

@@ -1,7 +1,7 @@
 import React from 'react';
 import './JobPayRange.css';
 
-export default function JobCard(props) {
+export default function JobPayRange(props) {
 
     let { min, max, quoted, period } = props;
 

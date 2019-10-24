@@ -1,9 +1,9 @@
 import React from 'react';
 import './JobHeader.css';
 
-export default function JobCard(props) {
+export default function JobHeader(props) {
 
-    let {logo,title,company,type} = props;
+    let {title,company,type} = props;
 
     function getType(type) {
         switch(type) {
@@ -20,9 +20,9 @@ export default function JobCard(props) {
 
     return(
         <div className="header">
-            <img className="logo" src={logo}></img>
+            <img className="logo" src={company.logoURL}></img>
             <div className="title">{title}
-                <div className="company">{company}</div>
+                <div className="company">{company.name}</div>
             </div>
         {getType(type)}
         </div>

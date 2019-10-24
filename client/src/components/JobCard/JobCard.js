@@ -36,7 +36,7 @@ export default function JobCard(props) {
       </div>
       <div className="address"><i className="material-icons">
         business
-        </i>{job.address}
+        </i>{job.company.address}
       </div>
     </div>
   );
