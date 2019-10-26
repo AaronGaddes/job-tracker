@@ -21,7 +21,12 @@ const jobSchema = new Schema({
         quoted: Number,
         period: String
     },
-    skills: [String],
+    skills: [
+        {
+            name: String,
+            required: Boolean
+        }
+    ],
     progress: [
         {
             stage: String,

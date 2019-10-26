@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+
 // const bcrypt = require('bcryptjs');
 // const Joi = require('joi');
 
@@ -64,6 +65,11 @@ router.get('/github/callback',passport.authenticate('github'),(req, res, next) =
     } else {
         next(new Error('User Authentication Failed'));
     }
+});
+
+router.get('/logout', (req, res)=> {
+    req.logout();
+    res.redirect(process.env.CLIENT_HOME_PAGE_URL);
 })
 
 

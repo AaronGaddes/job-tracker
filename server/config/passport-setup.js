@@ -41,7 +41,7 @@ async function(accessToken, refreshToken, profile, done) {
             done(null, newUser);
         }
     } catch (error) {
-        done(err);
+        done(error);
     }
 
 }))

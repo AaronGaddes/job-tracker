@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-
-import Button from '@material-ui/core/Button';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 import './App.css';
 import Navbar from './components/Navbar';
@@ -19,59 +22,8 @@ class App extends Component {
           user: false,
           jobs: false
         },
-        user: {
-            skills: {
-                HTML: true,
-                CSS: true,
-                JS: true
-            }
-        },
-        jobs: [
-            // {
-            //     title: 'Junior Software Developer',
-            //     company: 'A Cloud Guru',
-            //     logo: 'https://media.glassdoor.com/sqls/1434775/a-cloud-guru-squarelogo-1527500133047.png',
-            //     progress: [
-            //         {
-            //             stage: 'Initial Application',
-            //             scheduledDate: null,
-            //             doneDate: '8-Oct',
-            //             notes: null
-            //         },
-            //         {
-            //             stage: 'Initial Call',
-            //             scheduledDate: null,
-            //             doneDate: '10-Oct',
-            //             notes: null
-            //         },
-            //         {
-            //             stage: 'Interview',
-            //             scheduledDate: '20-Oct',
-            //             doneDate: null,
-            //             notes: null
-            //         }
-            //     ],
-            //     type: 'Full Time',
-            //     experience: `At least 1 year of professional software development experience
-            //     Used any OO language in production based systems Desirable`,
-            //     coverletter: {
-            //         type: 'link',
-            //         content: 'Cover Letter - ACloudGuru',
-            //         link: 'https://drive.google.com/open?id=1Vp1KJV5Wo4njpXZVQg6Cl7JsvZvnh9dUZ8atF0dAFL8'
-            //     },
-            //     skills: [
-            //         'HTML','CSS','JS','HTML5','CSS3'
-            //     ],
-            //     address: 'Level 13/31 Queen St, Melbourne VIC 3000',
-            //     renumeration: {
-            //         min: 70000,
-            //         max: 90000,
-            //         quoted: 80000,
-            //         period: 'anum'
-            //     },
-            //     failed: false
-            // }
-        ],
+        user: null,
+        jobs: [],
         selectedJob: null
     }
 
@@ -111,7 +63,7 @@ class App extends Component {
           ...this.state.loading,
           user: false
         },
-        sessionUser: user
+        user: user
     });
 
     if(user) {
@@ -141,14 +93,14 @@ class App extends Component {
   render(){
     return (
       <div className="App">
-        <Navbar sessionUser={this.state.sessionUser} />
+        <Navbar user={this.state.user} />
         {this.state.loading.jobs ? (
           <div className="progressCircle">
             <CircularProgress />
           </div>
           ) : (<JobList
           jobs={this.state.jobs}
-          userSkills={this.state.user.skills}
+          userSkills={(this.state.user && this.state.user.skills) || []}
           selectJob={this.selectJob}
         />)}
         <JobEditDialog

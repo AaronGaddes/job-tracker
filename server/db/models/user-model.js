@@ -6,7 +6,8 @@ const userSchema = new Schema({
     username: String,
     githubId: String,
     displayName: String,
-    avatarURL: String
+    avatarURL: String,
+    skills: [String]
 });
 
 const User = mongoose.model('user', userSchema);

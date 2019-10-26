@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 export default function ButtonAppBar(props) {
   const classes = useStyles();
 
-  const {sessionUser} = props;
+  const {user} = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -41,8 +41,7 @@ export default function ButtonAppBar(props) {
   };
 
   const handleLogout = () => {
-
-    handleClose();
+    window.location = "http://localhost:5000/auth/logout";
   }
 
   return (
@@ -56,7 +55,7 @@ export default function ButtonAppBar(props) {
             Job Applications
           </Typography>
           {
-            !sessionUser ?
+            !user ?
               (<Button color="inherit" href="http://localhost:5000/auth/github">Login</Button>)
             :
             (
@@ -68,7 +67,7 @@ export default function ButtonAppBar(props) {
                 onClick={handleMenu}
                 color="inherit"
               >
-                { sessionUser && sessionUser.avatarURL ? <Avatar src={sessionUser.avatarURL} /> : <AccountCircle />}
+                { user && user.avatarURL ? <Avatar src={user.avatarURL} /> : <AccountCircle />}
               </IconButton>
               <Menu
                 id="menu-appbar"
