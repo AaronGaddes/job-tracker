@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
+
+import Container from '@material-ui/core/Container';
 
 import './App.css';
 import Navbar from './components/Navbar';
 import JobList from './components/JobList/JobList';
+import Job from './components/Job/Job';
 
 import JobEditDialog from './components/JobEditDialog/JobEditDialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -28,6 +30,7 @@ class App extends Component {
     }
 
     this.selectJob = this.selectJob.bind(this);
+    this.updateJob = this.updateJob.bind(this);
   }
 
   selectJob(job) {
@@ -41,13 +44,7 @@ class App extends Component {
     this.selectJob(null);
   };
 
-  clickHandler = async() => {
-    let response = await fetch('http://localhost:5000/jobs',{credentials: 'include'});
-    let jobs = await response.json();
-    console.log(jobs);
-  }
-
-  async componentWillMount() {
+  async loadJobs() {
     this.setState({...this.state, loading: {
       ...this.state.loading,
       user: true
@@ -87,27 +84,52 @@ class App extends Component {
           jobs: jobs
         });
       }
+  }
+
+  async componentWillMount() {
+    await this.loadJobs();
     
+  }
+
+  async updateJob(job) {
+    let jobs = [...this.state.jobs];
+    let i = jobs.findIndex(j=>j._id == job._id);
+    if(i !== -1) {
+      jobs[i] = job;
+    } else {
+      jobs.push(job);
+    }
+    this.setState({...this.state, jobs});
   }
 
   render(){
     return (
-      <div className="App">
-        <Navbar user={this.state.user} />
-        {this.state.loading.jobs ? (
-          <div className="progressCircle">
-            <CircularProgress />
-          </div>
-          ) : (<JobList
-          jobs={this.state.jobs}
-          userSkills={(this.state.user && this.state.user.skills) || []}
-          selectJob={this.selectJob}
-        />)}
-        <JobEditDialog
-          job={this.state.selectedJob}
-          handleClose={this.handleDialogClose}
-        />
-      </div>
+      <Router>
+        <div className="App">
+          <Navbar user={this.state.user} />
+          <Container>
+            <Switch>
+              <Route path="/add">
+                <Job updateJob={this.updateJob} />
+              </Route>
+              <Route path="/:id">
+                <Job updateJob={this.updateJob} />
+              </Route>
+              <Route path="/">
+              {this.state.loading.jobs ? (
+                <div className="progressCircle">
+                  <CircularProgress />
+                </div>
+                ) : (<JobList
+                jobs={this.state.jobs}
+                userSkills={(this.state.user && this.state.user.skills) || []}
+                selectJob={this.selectJob}
+              />)}
+              </Route>
+            </Switch>
+          </Container>
+        </div>
+      </Router>
     )
   }
 }

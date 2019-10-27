@@ -7,14 +7,25 @@
     justify-content: space-between;
     align-items: center;
     height: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.23);
+    border: 1px solid #c4c4c4;
+    color: 1px solid #c4c4c4;
     border-radius: 1rem;
     padding: 0 0.5rem;
     margin-left: 0.25rem;
+  }
+
+  .skill.required {
+    background: #c4c4c4;
+    color: #ffffff;
   }
   
   
   .skill.have {
     color: #47cf73;
     border-color: #47cf73;
+  }
+
+  .skill.have.required {
+    background: #47cf73;
+    color: #ffffff;
   }

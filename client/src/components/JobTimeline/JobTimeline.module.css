@@ -1,0 +1,73 @@
+.heading {
+    display: flex;
+    align-items: center;
+  }
+  
+  .date {
+    font-size: 0.8rem;
+    padding: 0 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  .scheduled .circle, .scheduled .date {
+    background: #fabb42;
+    color: #fff;
+  }
+  
+  .scheduled .content {
+    border-color: #fabb42;
+  }
+  
+  .done .circle, .done .date {
+    background: #0ebeff;
+    color: #fff;
+  }
+  
+  .done .content {
+    border-color: #0ebeff;
+  }
+  
+  .circle {
+    width: 1.5em;
+    height: 1.5em;
+    background: rgba(0,0,0,0.12);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .add .circle {
+    background: #47cf73;
+    color: #fff;
+  }
+  
+  .circle > span {
+    font-size: 0.8em;
+  }
+  
+  .circle > i {
+    font-size: 1em;
+  }
+  
+  .label {
+    margin-left: 1rem;
+    font-size: 0.8em;
+  }
+  
+  .content {
+    margin: 0.5rem 0 0.5rem 0.6rem;
+    padding: 0rem 2rem 1.5rem;
+    border-left: 2px solid rgba(0,0,0,0.12);
+    color: rgba(0, 0, 0, 0.54);
+  }
+  
+  input,textarea {
+    border: none;
+    font-family: inherit;
+    color: inherit;
+  }
+  
+  .notes {
+    width: 100%;
+  }

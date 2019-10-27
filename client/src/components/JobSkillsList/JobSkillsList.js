@@ -1,5 +1,5 @@
 import React from 'react';
-import './JobSkillsList.css';
+import styles from './JobSkillsList.module.css';
 
 export default function JobSkillsList(props) {
 
@@ -11,7 +11,7 @@ export default function JobSkillsList(props) {
 
   return (
     <div className="skill-list">
-        {skills.map(skill => (<span key={skill.name} className={`skill ${hasSkill(skill.name) ? 'have' : ''}`}>{skill.name}</span>))}
+        {skills.map(skill => (<span key={skill.name} className={`${styles.skill} ${hasSkill(skill.name) ? styles.have : ''} ${skill.required ? styles.required : ''}`}>{skill.name}</span>))}
     </div>
   )
 }

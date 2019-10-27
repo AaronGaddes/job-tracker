@@ -1,4 +1,9 @@
 import React from 'react';
+
+import {
+  withRouter
+} from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -24,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ButtonAppBar(props) {
+function Navbar(props) {
   const classes = useStyles();
 
   const {user} = props;
@@ -44,6 +49,10 @@ export default function ButtonAppBar(props) {
     window.location = "http://localhost:5000/auth/logout";
   }
 
+  const handleLogoClick = () => {
+    props.history.push('/');
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -51,7 +60,7 @@ export default function ButtonAppBar(props) {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={handleLogoClick}>
             Job Applications
           </Typography>
           {
@@ -95,3 +104,5 @@ export default function ButtonAppBar(props) {
     </div>
   );
 }
+
+export default withRouter(Navbar);
