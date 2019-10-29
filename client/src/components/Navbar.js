@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -27,12 +28,18 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
   },
+  homeButton: {
+    color: theme.palette.common.white
+  },
+  githubIcon: {
+    marginLeft: '1rem'
+  }
 }));
 
 function Navbar(props) {
   const classes = useStyles();
 
-  const {user} = props;
+  const {user, updateUser} = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -46,26 +53,29 @@ function Navbar(props) {
   };
 
   const handleLogout = () => {
-    window.location = "http://localhost:5000/auth/logout";
+    updateUser(null);
+    window.location = `${process.env.REACT_APP_API_BASE_URL}/auth/logout`;
   }
 
   const handleLogoClick = () => {
     props.history.push('/');
   }
 
+  const handleProfile = () => {
+    handleClose();
+    props.history.push('/profile')
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title} onClick={handleLogoClick}>
-            Job Applications
+          <Typography variant="h6" className={classes.title}>
+            <Button className={classes.homeButton} onClick={handleLogoClick}>Job Applications</Button>
           </Typography>
           {
             !user ?
-              (<Button color="inherit" href="http://localhost:5000/auth/github">Login</Button>)
+              (<Button color="inherit" href={`${process.env.REACT_APP_API_BASE_URL}/auth/github`}>Login with <GitHubIcon className={classes.githubIcon} /></Button>)
             :
             (
               <div>
@@ -93,7 +103,7 @@ function Navbar(props) {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleProfile}>Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>

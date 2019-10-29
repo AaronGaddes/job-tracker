@@ -5,16 +5,18 @@ const passport = require('passport');
 const cookieSession = require('cookie-session');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 // const cookieParser = require('cookie-parser');
 
 const auth = require('./auth');
 const jobs = require('./api/jobs');
+const users = require('./api/users');
 
 const passportSetup = require('./config/passport-setup');
 
 const app = express();
 
-
+app.use(express.static(path.join(__dirname, 'build')));
 
 //Connect to MongoDB
 mongoose.connect(process.env.DB_URI, {
@@ -63,18 +65,19 @@ app.use(
     })
   );
 
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Welcome to the Job Tracker API'
-    });
-});
+app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 app.use('/auth', auth);
 
 app.use('/api/v1/jobs', isAuthenticated, jobs);
+app.use('/api/v1/users', isAuthenticated, users);
 
 app.use(errorHandler);
 app.use(notFound);
+
+app.get('*', function(req, res) {
+    res.sendFile(path.resolve(__dirname,'../client/build', 'index.html'));
+});
 
 function isAuthenticated(req, res, next) {
     if(req.user) {

@@ -1,0 +1,24 @@
+.skillsContainer {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.skills {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex: 0 1 auto;
+}
+
+.skill {
+    margin: 0.25rem;
+}
+
+.inputGroup {
+    padding: 2rem;
+}
+
+.actionButtonGroup {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,5 +1,6 @@
 .job {
     color: rgba(0, 0, 0, 0.54);
+    background-color: #ffffff;
     display: grid;
     cursor: pointer;
     grid-template-rows: auto auto 1fr auto;

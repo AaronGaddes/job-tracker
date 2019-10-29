@@ -6,6 +6,7 @@ import {
     Redirect
 } from "react-router-dom";
 
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,8 +21,15 @@ import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EventIcon from '@material-ui/icons/Event';
+import CheckIcon from '@material-ui/icons/Check';
+import DescriptionIcon from '@material-ui/icons/Description';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -37,19 +45,25 @@ import JobSkillsList from "../JobSkillsList/JobSkillsList";
 function Job(props) {
     let { id } = useParams();
 
-    let { updateJob } = props;
+    let { updateJob, deleteJob } = props;
 
     const [job,setJob] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [toHome, setToHome] = useState(false);
+
+    const [newLink, setNewLink] = useState({
+        title: '',
+        link: ''
+    })
 
     const [newSkillName, setNewSkillName] = useState('');
     
     useEffect(() => {
         if(id) {
-            fetch(`http://localhost:5000/api/v1/jobs/${id}`,{credentials: 'include'})
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/${id}`,{credentials: 'include'})
                 .then(res => res.json())
                 .then(job => {
                     setJob(job);
@@ -93,6 +107,30 @@ function Job(props) {
 
     const handleFailedChange = event => {
         setJob({...job, failed: event.target.checked});
+    }
+
+    const handleAddLink = () => {
+        let links = job.links || [];
+        links.push(newLink);
+        setNewLink({
+            title: '',
+            link: ''
+        })
+        setJob({...job,links});
+    }
+
+    const handleLinkClick = link => {
+        window.open(link.link, '_blank');
+    }
+
+    const handleLinkDelete = i => {
+        let links = job.links;
+        links.splice(i);
+        setJob({...job, links});
+    }
+
+    const handleNewLinkItemChange = fieldName => event => {
+        setNewLink({...newLink, [fieldName]: event.target.value});
     }
 
     const handleCompanyChange = fieldName => event => {
@@ -186,7 +224,7 @@ function Job(props) {
     const handleSave = () => {
         setIsSaving(true);
 
-            fetch(`http://localhost:5000/api/v1/jobs/`,
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/`,
                 {
                     method: id ? 'PUT' : 'POST',
                     credentials: 'include',
@@ -207,152 +245,220 @@ function Job(props) {
 
     }
 
+    const handleDelete = () => {
+        setIsDeleting(true);
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/${id}`,{method: 'DELETE', credentials: 'include'})
+            .then(res=>res.json())
+            .then(deletedJob=>{
+                if(deletedJob._id){
+                    deleteJob(deletedJob._id);
+                }
+            }).catch(error => console.log(error))
+            .finally(()=>{
+                setIsDeleting(false);
+                setToHome(true);
+            })
+    }
+
     
     return (
         <>
             {isLoading && <CircularProgress />}
             {job && <div>
-            <JobHeader
-                logo={job.logo}
-                title={job.title}
-                company={job.company}
-                type={job.type}
-            />
+                <Paper>
+                    <JobHeader
+                        logo={job.logo}
+                        title={job.title}
+                        company={job.company}
+                        type={job.type}
+                    />
+                </Paper>
             <form noValidate>
-                <div className={styles.inputGroup}>
-                    <Typography variant="h4">Basic Info</Typography>
-                    <div className={styles.jobTitleGroup}>
+                <div className={styles.formGrid}>
+                    <Paper className={styles.inputGroup}>
+                        <Typography variant="h5">Basic Info</Typography>
+                        <div className={styles.jobTitleGroup}>
+                            <TextField
+                                id="title"
+                                label="title"
+                                value={job.title}
+                                onChange={handleChange('title')}
+                                fullWidth
+                                margin="normal"
+                            />
+                            <FormControlLabel
+                                control={
+                                <Switch checked={job.failed} onChange={handleFailedChange} value={job.failed} />
+                                }
+                                label="Failed"
+                            />
+                        </div>
+                        <FormControl>
+                            <InputLabel htmlFor="contract-type">Contract</InputLabel>
+                            <Select
+                            value={job.type}
+                            onChange={handleChange('type')}
+                            inputProps={{
+                                name: 'type',
+                                id: 'contract-type',
+                            }}
+                            >
+                            <MenuItem value="Part Time">Part Time</MenuItem>
+                            <MenuItem value="Full Time">Full Time</MenuItem>
+                            </Select>
+                        </FormControl>
                         <TextField
-                            id="title"
-                            label="title"
-                            value={job.title}
-                            onChange={handleChange('title')}
+                            id="description"
+                            label="description"
+                            value={job.description}
+                            onChange={handleChange('description')}
+                            multiline
                             fullWidth
                             margin="normal"
                         />
-                        <FormControlLabel
-                            control={
-                            <Switch checked={job.failed} onChange={handleFailedChange} value={job.failed} />
-                            }
-                            label="Failed"
-                        />
-                    </div>
-                    <FormControl>
-                        <InputLabel htmlFor="contract-type">Contract</InputLabel>
-                        <Select
-                        value={job.type}
-                        onChange={handleChange('type')}
-                        inputProps={{
-                            name: 'type',
-                            id: 'contract-type',
-                        }}
-                        >
-                        <MenuItem value="Part Time">Part Time</MenuItem>
-                        <MenuItem value="Full Time">Full Time</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        id="description"
-                        label="description"
-                        value={job.description}
-                        onChange={handleChange('description')}
-                        multiline
-                        fullWidth
-                        margin="normal"
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <Typography variant="h4">Company</Typography>
-                    <TextField
-                        id="companyName"
-                        label="name"
-                        value={job.company.name}
-                        onChange={handleCompanyChange('name')}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        id="companyLogoURL"
-                        label="logo URL"
-                        value={job.company.logoURL}
-                        onChange={handleCompanyChange('logoURL')}
-                        multiline
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        id="companyAddress"
-                        label="address"
-                        value={job.company.address}
-                        onChange={handleCompanyChange('address')}
-                        multiline
-                        fullWidth
-                        margin="normal"
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <Typography variant="h4">Skills</Typography>
-                    <div className={styles.skillsContainer}>
+                    </Paper>
+                    <Paper className={styles.inputGroup}>
+                        <Typography variant="h5">Links</Typography>
+                            <TextField
+                                    id="LinkTitle"
+                                    label="title"
+                                    value={newLink.title}
+                                    onChange={handleNewLinkItemChange('title')}
+                                    margin="normal"
+                                />
+                                <TextField
+                                    id="LinkLink"
+                                    label="link"
+                                    fullWidth
+                                    value={newLink.link}
+                                    onChange={handleNewLinkItemChange('link')}
+                                    margin="normal"
+                                />
+                            <Fab size="small" color="primary" aria-label="add" onClick={handleAddLink}>
+                                <AddIcon />
+                            </Fab>
+                            <div className={styles.linksContainer}>
+                                {job.links && job.links.map((link,i) => (
+                                        <Chip
+                                            key={i}
+                                            variant="outlined"
+                                            size="small"
+                                            color="primary"
+                                            icon={<OpenInNewIcon />}
+                                            label={link.title}
+                                            onClick={() => handleLinkClick(link)}
+                                            onDelete={() => handleLinkDelete(i)}
+                                        />
+                                ))}
+                            </div>
+                    </Paper>
+                    <Paper className={styles.inputGroup}>
+                        <Typography variant="h5">Company</Typography>
                         <TextField
-                            id="newSkillName"
-                            label="new skill"
-                            helperText="Hit Enter to add"
+                            id="companyName"
+                            label="name"
+                            value={job.company.name}
+                            onChange={handleCompanyChange('name')}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            id="companyLogoURL"
+                            label="logo URL"
+                            value={job.company.logoURL}
+                            onChange={handleCompanyChange('logoURL')}
+                            multiline
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            id="companyAddress"
+                            label="address"
+                            value={job.company.address}
+                            onChange={handleCompanyChange('address')}
+                            multiline
+                            fullWidth
+                            margin="normal"
+                        />
+                    </Paper>
+                    <Paper className={styles.inputGroup}>
+                        <Typography variant="h5">Skills</Typography>
+                        <div className={styles.skillsContainer}>
+                            <TextField
+                                id="newSkillName"
+                                label="new skill"
+                                helperText="Hit Enter to add"
+                                autoComplete="off"
+                                value={newSkillName}
+                                onChange={handleNewSkillInputChange}
+                                onKeyDown={handleSkillEnterPress}
+
+                            />
+                            <div className={styles.skills}>
+                                {
+                                    job.skills.map((skill,i)=>(
+                                        <Chip
+                                            key={i}
+                                            variant={skill.required ? undefined : "outlined"}
+                                            color="primary"
+                                            className={styles.skill}
+                                            label={skill.name}
+                                            onClick={() => handleSkillClick(i)}
+                                            onDelete={() => handleSkillDelete(i)}
+                                        />
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    </Paper>
+                    <Paper className={styles.inputGroup}>
+                        <Typography variant="h5">Renumeration</Typography>
+                        <TextField
+                            id="min"
+                            label="min"
                             autoComplete="off"
-                            value={newSkillName}
-                            onChange={handleNewSkillInputChange}
-                            onKeyDown={handleSkillEnterPress}
+                            value={job.renumeration.min}
+                            onChange={handleRenumerationChange('min')}
 
                         />
-                        <div className={styles.skills}>
-                            {
-                                job.skills.map((skill,i)=>(
-                                    <Chip
-                                        key={skill.name}
-                                        variant={skill.required ? undefined : "outlined"}
-                                        color="primary"
-                                        className={styles.skill}
-                                        label={skill.name}
-                                        onClick={() => handleSkillClick(i)}
-                                        onDelete={() => handleSkillDelete(i)}
-                                    />
-                                ))
-                            }
-                        </div>
-                    </div>
+                        <TextField
+                            id="quoted"
+                            label="quoted"
+                            autoComplete="off"
+                            value={job.renumeration.quoted}
+                            onChange={handleRenumerationChange('quoted')}
+
+                        />
+                        <TextField
+                            id="max"
+                            label="max"
+                            autoComplete="off"
+                            value={job.renumeration.max}
+                            onChange={handleRenumerationChange('max')}
+
+                        />
+                    </Paper>
                 </div>
-                <div className={styles.inputGroup}>
-                    <Typography variant="h4">Renumeration</Typography>
-                    <TextField
-                        id="min"
-                        label="min"
-                        autoComplete="off"
-                        value={job.renumeration.min}
-                        onChange={handleRenumerationChange('min')}
-
-                    />
-                    <TextField
-                        id="quoted"
-                        label="quoted"
-                        autoComplete="off"
-                        value={job.renumeration.quoted}
-                        onChange={handleRenumerationChange('quoted')}
-
-                    />
-                    <TextField
-                        id="max"
-                        label="max"
-                        autoComplete="off"
-                        value={job.renumeration.max}
-                        onChange={handleRenumerationChange('max')}
-
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <Typography variant="h4">Progress</Typography>
+                <Paper className={styles.inputGroup}>
+                    <Typography variant="h5">Progress</Typography>
                     {job.progress.map((stage,index) => (
                         <div key={index} className={stage.scheduledDate ? styles.scheduled : stage.doneDate ? styles.done : ''}>
                         <div className={styles.heading}>
-                            <div className={styles.circle}>
+                        <Avatar className={styles.timelineAvatar}>
+                            {
+                                (stage.doneDate || stage.scheduledDate) ?
+                                (
+                                // <i className="material-icons">
+                                stage.scheduledDate ? <EventIcon /> : stage.doneDate ? <CheckIcon /> : '' 
+                                // </i>
+                                )
+                                :
+                                (
+                                <span>{index + 1}</span>
+                                )
+                            }
+                        </Avatar>
+                            {/* <div className={styles.circle}>
                             {
                                 (stage.doneDate || stage.scheduledDate) ?
                                 (
@@ -365,7 +471,7 @@ function Job(props) {
                                 <span>{index + 1}</span>
                                 )
                             }
-                    </div>
+                            </div> */}
                         <TextField
                                 id={`stage-${index}-stage`}
                                 label="stage"
@@ -413,7 +519,7 @@ function Job(props) {
                     ))}
                     <div className={styles.add}>
                         <div className={styles.heading}>
-                            <ButtonBase
+                            {/* <ButtonBase
                                 focusRipple
                                 className={styles.circle}
                                 focusVisibleClassName={styles.circle}
@@ -422,13 +528,19 @@ function Job(props) {
                                     <i className="material-icons">
                                         add
                                     </i>
-                                </ButtonBase>
+                                </ButtonBase> */}
+                            <Fab size="small" color="primary" aria-label="add" onClick={handleAddProgressStage}>
+                                <AddIcon />
+                            </Fab>
                         </div>
                     </div>
-                </div>
+                </Paper>
                 <div className={`${styles.inputGroup} ${styles.actionButtonGroup}`}>
                     <Button variant="outlined" onClick={handleCancel}>
                         Cancel
+                    </Button>
+                    <Button variant="outlined" color="secondary" disabled={isDeleting} onClick={handleDelete}>
+                        {isDeleting ? 'Deleting...' : 'Delete'}
                     </Button>
                     <Button variant="contained" color="primary" disabled={isSaving} onClick={handleSave}>
                         {isSaving ? 'Saving...' : 'Save'}

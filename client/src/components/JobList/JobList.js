@@ -13,7 +13,7 @@ import JobCard from '../JobCard/JobCard';
 
 function JobList(props) {
 
-    let {jobs, userSkills} = props;
+    let {jobs, user} = props;
 
     const handleAddNew = () => {
         props.history.push('/add');
@@ -26,17 +26,21 @@ function JobList(props) {
     }
     
     return (
-        <div className={`${styles.jobList}`}>
+        user && <div className={`${styles.jobList}`}>
             {jobs.map((job, i)=>(
                 <JobCard
                     key={`${job.title}-${job.company}`}
                     job={job}
-                    userSkills={userSkills}
+                    userSkills={user.skills}
                     onClick={()=>handleJobClick(job)}
                 />
                 )
             )}
             <div className={styles.addNew} onClick={handleAddNew}>Add New</div>
+        </div>
+        ||
+        <div>
+            
         </div>
     );
 }

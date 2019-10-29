@@ -48,4 +48,14 @@ router.put('/', async (req, res, next) => {
     }
 });
 
+router.delete('/:id', async (req, res, next) => {
+    try {
+        let {id} = req.params;
+        let response = await Job.findByIdAndDelete(id);
+        res.send(response);
+    } catch (error) {
+        next(error);
+    }
+})
+
 module.exports = router;

@@ -1,5 +1,6 @@
 import React from 'react';
 import './JobHeader.css';
+import BusinessIcon from '@material-ui/icons/Business';
 
 export default function JobHeader(props) {
 
@@ -20,7 +21,7 @@ export default function JobHeader(props) {
 
     return(
         <div className="header">
-            <img className="logo" src={company.logoURL}></img>
+            {company.logoURL == '' ? <span className="logo"><BusinessIcon /></span> :<img className="logo" src={company.logoURL}></img>}
             <div className="title">{title}
                 <div className="company">{company.name}</div>
             </div>

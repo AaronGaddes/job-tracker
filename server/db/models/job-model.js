@@ -36,11 +36,12 @@ const jobSchema = new Schema({
         }
     ],
     failed: Boolean,
-    coverLetter: {
-        type: String,
-        content: String,
-        link: String
-    },
+    links: [
+        {
+            title: String,
+            link: String
+        }
+    ],
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'job'
