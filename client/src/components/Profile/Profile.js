@@ -27,7 +27,7 @@ function Profile(props) {
     const [toHome, setToHome] = useState(false);
 
     useEffect(()=>{
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/authenticate`,{credentials: 'include'})
+        fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/auth/authenticate`,{credentials: 'include'})
             .then(res=>res.json())
             .then(res => {
                 
@@ -60,7 +60,7 @@ function Profile(props) {
     const handleSave = () => {
         setIsSaving(true);
 
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/users/`,
+            fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/users/`,
                 {
                     method: 'PUT',
                     credentials: 'include',

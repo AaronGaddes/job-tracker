@@ -63,7 +63,7 @@ function Job(props) {
     
     useEffect(() => {
         if(id) {
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/${id}`,{credentials: 'include'})
+            fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{credentials: 'include'})
                 .then(res => res.json())
                 .then(job => {
                     setJob(job);
@@ -224,7 +224,7 @@ function Job(props) {
     const handleSave = () => {
         setIsSaving(true);
 
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/`,
+            fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/`,
                 {
                     method: id ? 'PUT' : 'POST',
                     credentials: 'include',
@@ -247,7 +247,7 @@ function Job(props) {
 
     const handleDelete = () => {
         setIsDeleting(true);
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs/${id}`,{method: 'DELETE', credentials: 'include'})
+        fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{method: 'DELETE', credentials: 'include'})
             .then(res=>res.json())
             .then(deletedJob=>{
                 if(deletedJob._id){

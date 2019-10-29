@@ -49,7 +49,7 @@ class App extends Component {
 
   async loadJobs() {
     this.setState({...this.state, loading: true});
-    let response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/authenticate`,{credentials: 'include'});
+    let response = await fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/auth/authenticate`,{credentials: 'include'});
     let {user} = await response.json();
     console.log(user);
 
@@ -64,7 +64,7 @@ class App extends Component {
       this.setState({
         ...this.state,
         loading: true});
-      let jobsResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/v1/jobs`,{credentials: 'include'});
+      let jobsResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs`,{credentials: 'include'});
       let {jobs} = await jobsResponse.json();
       console.log(jobs);
       this.setState(
@@ -83,7 +83,7 @@ class App extends Component {
 
   handleLoginClick() {
     this.setState({...this.state, loading: true});
-    window.location.assign(`${process.env.REACT_APP_API_BASE_URL}/auth/github`);
+    window.location.assign(`${process.env.REACT_APP_API_BASE_URL || ''}/auth/github`);
   }
 
   async updateJob(job) {

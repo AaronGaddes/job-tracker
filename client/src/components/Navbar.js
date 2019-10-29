@@ -54,7 +54,7 @@ function Navbar(props) {
 
   const handleLogout = () => {
     updateUser(null);
-    window.location = `${process.env.REACT_APP_API_BASE_URL}/auth/logout`;
+    window.location = `${process.env.REACT_APP_API_BASE_URL || ''}/auth/logout`;
   }
 
   const handleLogoClick = () => {
@@ -75,7 +75,7 @@ function Navbar(props) {
           </Typography>
           {
             !user ?
-              (<Button color="inherit" href={`${process.env.REACT_APP_API_BASE_URL}/auth/github`}>Login with <GitHubIcon className={classes.githubIcon} /></Button>)
+              (<Button color="inherit" href={`${process.env.REACT_APP_API_BASE_URL || ''}/auth/github`}>Login with <GitHubIcon className={classes.githubIcon} /></Button>)
             :
             (
               <div>
