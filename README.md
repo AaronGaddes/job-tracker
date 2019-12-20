@@ -2,7 +2,7 @@
 
 A simple app to track jobs the user has applied for and their current status.
 
-View the deployed app (here)[https://job-application-tracker-1.herokuapp.com/].
+View the deployed app [here](https://job-application-tracker-1.herokuapp.com/).
 
 ## ToDo
 * [x] Create Server
