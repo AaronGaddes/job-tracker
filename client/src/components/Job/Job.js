@@ -45,12 +45,14 @@ import JobSkillsList from "../JobSkillsList/JobSkillsList";
 function Job(props) {
     let { id } = useParams();
 
-    let { updateJob, deleteJob } = props;
+    let { updateJob, deleteJob, user } = props;
 
     const [job,setJob] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const [hasError, setHasError] = useState(false);
 
     const [toHome, setToHome] = useState(false);
 
@@ -62,14 +64,29 @@ function Job(props) {
     const [newSkillName, setNewSkillName] = useState('');
     
     useEffect(() => {
+        setHasError(false);
         if(id) {
-            fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{credentials: 'include'})
-                .then(res => res.json())
-                .then(job => {
+            if(user) {
+                // Logged in user
+                fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{credentials: 'include'})
+                    .then(res => res.json())
+                    .then(job => {
+                        setJob(job);
+                        setIsLoading(false);
+                    })
+                    .catch(error => console.log(error));
+            } else {
+                // Anonomous user
+                try {
+                    let job = JSON.parse(window.localStorage.getItem('jobs'))[id];
                     setJob(job);
+                } catch (error) {
+                    setHasError(true);
+                    console.error(error);
+                } finally {
                     setIsLoading(false);
-                })
-                .catch(error => console.log(error));
+                }
+            }
         } else {
             setJob({
                 "company": {
@@ -99,7 +116,7 @@ function Job(props) {
               });
             setIsLoading(false);
         }
-    }, []);
+    }, [user]);
 
     const handleChange = fieldName => event => {
         setJob({...job, [fieldName]: event.target.value});
@@ -224,6 +241,7 @@ function Job(props) {
     const handleSave = () => {
         setIsSaving(true);
 
+        if(user){
             fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/`,
                 {
                     method: id ? 'PUT' : 'POST',
@@ -242,6 +260,22 @@ function Job(props) {
                     setToHome(true);
                 })
                 .catch(error => console.log(error));
+        } else {
+            // Anonymous user
+            let jobs = JSON.parse(window.localStorage.getItem('jobs')) || [];
+            let newJob = {...job}
+            if(id) {
+                jobs[id] = newJob;
+            } else {
+                newJob._id = jobs.length;
+                jobs.push(newJob);
+            }
+            window.localStorage.setItem('jobs',JSON.stringify(jobs));
+            updateJob(newJob);
+            setIsSaving(false);
+            // props.history.push(`/${newJob._id}`);
+            setToHome(true);
+        }
 
     }
 
@@ -264,7 +298,8 @@ function Job(props) {
     return (
         <>
             {isLoading && <CircularProgress />}
-            {job && <div>
+            {hasError && <Paper>There was an issue retreiving the Job information.</Paper>}
+            {job && !hasError && <div>
                 <Paper>
                     <JobHeader
                         logo={job.logo}

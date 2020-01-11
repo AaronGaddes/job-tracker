@@ -31,7 +31,7 @@ export default function JobCard(props) {
           />
         <JobSkillsList
           skills={job.skills}
-          userSkills={userSkills}
+          userSkills={userSkills || []}
         />
       </div>
       <div className="address"><i className="material-icons">

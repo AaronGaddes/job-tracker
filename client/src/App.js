@@ -73,6 +73,12 @@ class App extends Component {
           loading: false,
           jobs: jobs
         });
+      } else {
+        // Anonymous user - attempt to load jobs from local storage
+        let jobs = JSON.parse(window.localStorage.getItem('jobs')) || [];
+        console.log('jobs', jobs);
+        
+        this.setState({...this.state, jobs});
       }
   }
 
@@ -125,25 +131,21 @@ class App extends Component {
                 />
               </Route>
               <Route path="/add">
-                <Job updateJob={this.updateJob} />
+                <Job updateJob={this.updateJob} user={this.state.user} />
               </Route>
               <Route path="/:id">
-                <Job updateJob={this.updateJob} deleteJob={this.deleteJob} />
+                <Job updateJob={this.updateJob} deleteJob={this.deleteJob} user={this.state.user} />
               </Route>
               <Route path="/">
               {this.state.loading ? (
                 <div className={styles.center}>
                   <CircularProgress />
                 </div>
-                ) : this.state.user ? (<JobList
+                ) : (<JobList
                 jobs={this.state.jobs}
-                user={(this.state.user)}
+                user={this.state.user}
                 selectJob={this.selectJob}
               />)
-              :
-              <div className={styles.center}>
-                <Button color="inherit" onClick={this.handleLoginClick}>Login with <GitHubIcon className={styles.githubIcon} /></Button>
-              </div>
               }
               </Route>
             </Switch>

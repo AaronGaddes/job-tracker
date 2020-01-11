@@ -26,20 +26,17 @@ function JobList(props) {
     }
     
     return (
-        user && <div className={`${styles.jobList}`}>
+        <div className={`${styles.jobList}`}>
             {jobs.map((job, i)=>(
                 <JobCard
                     key={`${job.title}-${job.company}`}
                     job={job}
-                    userSkills={user.skills}
+                    userSkills={user && user.skills || []}
                     onClick={()=>handleJobClick(job)}
                 />
                 )
             )}
             <div className={styles.addNew} onClick={handleAddNew}>Add New</div>
-        </div>
-        ||
-        <div>
             
         </div>
     );
