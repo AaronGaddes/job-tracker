@@ -281,17 +281,31 @@ function Job(props) {
 
     const handleDelete = () => {
         setIsDeleting(true);
-        fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{method: 'DELETE', credentials: 'include'})
-            .then(res=>res.json())
-            .then(deletedJob=>{
-                if(deletedJob._id){
-                    deleteJob(deletedJob._id);
-                }
-            }).catch(error => console.log(error))
-            .finally(()=>{
-                setIsDeleting(false);
-                setToHome(true);
-            })
+
+        if(user) {
+            fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/jobs/${id}`,{method: 'DELETE', credentials: 'include'})
+                .then(res=>res.json())
+                .then(deletedJob=>{
+                    if(deletedJob._id){
+                        deleteJob(deletedJob._id);
+                    }
+                }).catch(error => console.log(error))
+                .finally(()=>{
+                    setIsDeleting(false);
+                    setToHome(true);
+                })
+
+        } else {
+            // Anonymous user
+            let jobs = JSON.parse(window.localStorage.getItem('jobs')) || [];
+            if(id) {
+                jobs.splice(id);
+                window.localStorage.setItem('jobs',JSON.stringify(jobs));
+                deleteJob(id);
+            }
+            setIsDeleting(false);
+            setToHome(true);
+        }
     }
 
     
