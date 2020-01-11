@@ -107,7 +107,7 @@ class App extends Component {
     let jobs = [...this.state.jobs];
     let i = jobs.findIndex(j=>j._id == id);
     if(i !== -1) {
-      jobs.splice(i);
+      jobs.splice(i,1);
       this.setState({...this.state, jobs});      
     }
 

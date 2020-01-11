@@ -10,6 +10,7 @@ import {
 
 
 import JobCard from '../JobCard/JobCard';
+import { Paper, Typography, Card, CardHeader, CardActions, Button } from '@material-ui/core';
 
 function JobList(props) {
 
@@ -26,7 +27,7 @@ function JobList(props) {
     }
     
     return (
-        <div className={`${styles.jobList}`}>
+        jobs && jobs.length > 0 && <div className={`${styles.jobList}`}>
             {jobs.map((job, i)=>(
                 <JobCard
                     key={`${job.title}-${job.company}`}
@@ -39,6 +40,15 @@ function JobList(props) {
             <div className={styles.addNew} onClick={handleAddNew}>Add New</div>
             
         </div>
+        ||
+        <Card>
+            <CardHeader
+                title="Oops. Looks like you haven't applied for any jobs. Click below to add new job's you've applied for."
+            />
+            <CardActions>
+                <Button size="small" color="primary" onClick={handleAddNew}>Add New</Button>
+            </CardActions>
+        </Card>
     );
 }
 
