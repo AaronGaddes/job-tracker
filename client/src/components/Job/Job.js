@@ -106,7 +106,7 @@ function Job(props) {
                   {
                     "stage": "Initial Application",
                     "scheduledDate": null,
-                    "doneDate": null,
+                    "doneDate": Date.now(),
                     "notes": ""
                   }
                 ],

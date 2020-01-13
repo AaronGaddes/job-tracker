@@ -122,7 +122,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <Navbar user={this.state.user} updateUser={this.updateUser} />
-          <Container>
+          <Container className={styles.container}>
             <Switch>
               <Route path="/profile">
                 <Profile
