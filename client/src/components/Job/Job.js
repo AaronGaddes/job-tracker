@@ -78,7 +78,7 @@ function Job(props) {
             } else {
                 // Anonomous user
                 try {
-                    let job = JSON.parse(window.localStorage.getItem('jobs')).find(j=>j._id=id);
+                    let job = JSON.parse(window.localStorage.getItem('jobs')).find(j=>j._id==id);
                     setJob(job);
                 } catch (error) {
                     setHasError(true);
@@ -265,7 +265,8 @@ function Job(props) {
             let jobs = JSON.parse(window.localStorage.getItem('jobs')) || [];
             let newJob = {...job}
             if(id) {
-                jobs[id] = newJob;
+                let currentJobIndex = jobs.findIndex(j=>j._id == id);
+                jobs[currentJobIndex] = newJob;
             } else {
                 newJob._id = btoa(`${Date.now()}_${Math.random()}`);
                 jobs.push(newJob);
@@ -301,7 +302,8 @@ function Job(props) {
             console.log('jobId', id);
             console.log('jobs', JSON.stringify(jobs));
             if(id) {
-                jobs.splice(id,1);
+                let currentJobIndex = jobs.findIndex(j=>j._id == id);
+                jobs.splice(currentJobIndex,1);
                 console.log('jobs after splice', JSON.stringify(jobs));
                 window.localStorage.setItem('jobs',JSON.stringify(jobs));
                 deleteJob(id);
