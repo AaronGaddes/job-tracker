@@ -1,7 +1,32 @@
 .header {
-    display: flex;
-    padding: 1rem;
-  }
+  display: flex;
+  padding: 1rem;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.header-map {
+  align-items: flex-end;
+  /* background: url(https://developer.here.com/documentation/maps/content/dev_guide/graphics/map-tile-terrain-map.png);
+  background-position: center;
+  background-size: cover;
+  position: relative; */
+  min-height: 5rem;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,1));
+}
+
+/* .header-map::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+} */
+
+/* .header-map > * {
+  z-index: 1;
+} */
 
 .logo {
 flex: 0 0 auto;

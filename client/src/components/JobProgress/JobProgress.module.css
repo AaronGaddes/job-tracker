@@ -2,7 +2,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0,1fr));
     grid-gap:3px;
-    height: 3px;
     text-align: right;
   }
   

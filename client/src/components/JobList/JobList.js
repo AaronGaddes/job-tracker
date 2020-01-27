@@ -37,8 +37,10 @@ function JobList(props) {
                 />
                 )
             )}
-            <div className={styles.addNew} onClick={handleAddNew}>Add New</div>
-            
+            {/* <div className={styles.addNew} onClick={handleAddNew}>Add New</div> */}
+            <Fab className={styles.fab} color="primary" aria-label="add" onClick={handleAddNew}>
+                <AddIcon />
+            </Fab>
         </div>
         ||
         <Card>

@@ -13,12 +13,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Fab from '@material-ui/core/Fab';
@@ -31,6 +35,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import DescriptionIcon from '@material-ui/icons/Description';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
+import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
@@ -41,16 +47,21 @@ import styles from './Job.module.css';
 
 import JobHeader from '../JobHeader/JobHeader';
 import JobSkillsList from "../JobSkillsList/JobSkillsList";
+import JobsMap from "../Map/JobsMap";
 
 function Job(props) {
     let { id } = useParams();
 
-    let { updateJob, deleteJob, user } = props;
+    let { updateJob, deleteJob, user, generatedJob } = props;
 
-    const [job,setJob] = useState(null);
+    const [job,setJob] = useState(generatedJob || null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isAddressLoading, setIsAddressLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // for generating from url
+    const [generateUrl, setGenerateUrl] = useState('');
 
     const [hasError, setHasError] = useState(false);
 
@@ -151,7 +162,7 @@ function Job(props) {
     }
 
     const handleCompanyChange = fieldName => event => {
-        let company = {...job.company, [fieldName]: event.target.value};
+        let company = {...job.company, [fieldName]: event.target.value || event.target.innerText};
         setJob({...job, company});
     }
 
@@ -313,20 +324,88 @@ function Job(props) {
         }
     }
 
+
+  const generateFromUrl = async (e) => {
+
+    setIsLoading(true);
+
+    e.preventDefault();
+
+    let reqBody = {
+      srcUrl: generateUrl
+    }
+
+    try {
+      let url = `${process.env.REACT_APP_API_BASE_URL || ''}/api/v1/generate`;
+      console.log(url);
+      console.log(reqBody);
+      
+      let res = await fetch(url,{
+        method: 'POST',
+        body: JSON.stringify(reqBody),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      let generatedJob = await res.json();
+
+      setJob(generatedJob);
+
+    } catch (error) {
+      
+    } finally {
+        setIsLoading(false);
+    }
+    
+  }
+
+  const searchAddress = async () => {
+      setIsAddressLoading(true);
+      try {
+          let locationDetails = await fetch(`https://nominatim.openstreetmap.org/search/${job.company.address}?format=json&addressdetails=1&limit=1`).then(res=>res.json());
+                  
+              if(locationDetails.length > 0) {
+                  
+                  let company = {...job.company};
+                  company.location = {
+                          latitude: locationDetails[0].lat,
+                          longitude: locationDetails[0].lon
+                  };
+      
+                  setJob({...job,company});
+              }
+      } catch {
+
+      } finally {
+          setIsAddressLoading(false);
+      }
+  }
+
+
     
     return (
         <>
+            {!id && (
+                <Paper className={styles.inputGroup}>
+                    <form onSubmit={generateFromUrl}>
+                    <TextField fullWidth placeholder="Add from Seek or Indeed URL" name="srcUrl" id="srcUrl" value={generateUrl} onChange={(e) => setGenerateUrl(e.target.value)} />
+                    </form>
+                </Paper>
+                )
+            }
             {isLoading && <CircularProgress />}
             {hasError && <Paper>There was an issue retreiving the Job information.</Paper>}
-            {job && !hasError && <div>
-                <Paper>
+            {job && !hasError && !isLoading && <div>
+                {/* <Paper>
                     <JobHeader
                         logo={job.logo}
                         title={job.title}
                         company={job.company}
                         type={job.type}
                     />
-                </Paper>
+                </Paper> */}
             <form noValidate>
                 <div className={styles.formGrid}>
                     <Paper className={styles.inputGroup}>
@@ -361,15 +440,34 @@ function Job(props) {
                             <MenuItem value="Full Time">Full Time</MenuItem>
                             </Select>
                         </FormControl>
-                        <TextField
-                            id="description"
-                            label="description"
-                            value={job.description}
-                            onChange={handleChange('description')}
-                            multiline
-                            fullWidth
-                            margin="normal"
-                        />
+                        <Typography variant="h6">Skills</Typography>
+                        <div className={styles.skillsContainer}>
+                            <TextField
+                                id="newSkillName"
+                                label="new skill"
+                                helperText="Hit Enter to add"
+                                autoComplete="off"
+                                value={newSkillName}
+                                onChange={handleNewSkillInputChange}
+                                onKeyDown={handleSkillEnterPress}
+
+                            />
+                            <div className={styles.skills}>
+                                {
+                                    job.skills.map((skill,i)=>(
+                                        <Chip
+                                            key={i}
+                                            variant={skill.required ? undefined : "outlined"}
+                                            color="primary"
+                                            className={styles.skill}
+                                            label={skill.name}
+                                            onClick={() => handleSkillClick(i)}
+                                            onDelete={() => handleSkillDelete(i)}
+                                        />
+                                    ))
+                                }
+                            </div>
+                        </div>
                     </Paper>
                     <Paper className={styles.inputGroup}>
                         <Typography variant="h5">Links</Typography>
@@ -433,37 +531,20 @@ function Job(props) {
                             multiline
                             fullWidth
                             margin="normal"
+                            InputProps={{endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton onClick={searchAddress}>
+                                        <LocationSearchingIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                              }}
                         />
-                    </Paper>
-                    <Paper className={styles.inputGroup}>
-                        <Typography variant="h5">Skills</Typography>
-                        <div className={styles.skillsContainer}>
-                            <TextField
-                                id="newSkillName"
-                                label="new skill"
-                                helperText="Hit Enter to add"
-                                autoComplete="off"
-                                value={newSkillName}
-                                onChange={handleNewSkillInputChange}
-                                onKeyDown={handleSkillEnterPress}
-
-                            />
-                            <div className={styles.skills}>
-                                {
-                                    job.skills.map((skill,i)=>(
-                                        <Chip
-                                            key={i}
-                                            variant={skill.required ? undefined : "outlined"}
-                                            color="primary"
-                                            className={styles.skill}
-                                            label={skill.name}
-                                            onClick={() => handleSkillClick(i)}
-                                            onDelete={() => handleSkillDelete(i)}
-                                        />
-                                    ))
-                                }
+                        {isAddressLoading && <CircularProgress />}
+                        {!isAddressLoading && job.company && job.company.location && job.company.location.latitude && job.company.location.longitude && (
+                            <div style={{position: "relative", height: "8rem"}}>
+                                <JobsMap location={job.company.location} />
                             </div>
-                        </div>
+                        )}
                     </Paper>
                     <Paper className={styles.inputGroup}>
                         <Typography variant="h5">Renumeration</Typography>
@@ -490,6 +571,18 @@ function Job(props) {
                             value={job.renumeration.max}
                             onChange={handleRenumerationChange('max')}
 
+                        />
+                    </Paper>
+                    <Paper className={`${styles.inputGroup} ${styles.fullWidth}`}>
+                        <Typography variant="h5">Description</Typography>
+                        <TextField
+                            id="description"
+                            label="description"
+                            value={job.description}
+                            onChange={handleChange('description')}
+                            multiline
+                            fullWidth
+                            margin="normal"
                         />
                     </Paper>
                 </div>

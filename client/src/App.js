@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from "react-router-dom";
 
 import Container from '@material-ui/core/Container';
@@ -18,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Profile from './components/Profile/Profile';
 import Button from '@material-ui/core/Button';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import JobsMap from './components/Map/JobsMap';
 
 class App extends Component {
   constructor(props) {
@@ -26,7 +28,9 @@ class App extends Component {
         loading: false,
         user: null,
         jobs: [],
-        selectedJob: null
+        selectedJob: null,
+        generateUrl: '',
+        generatedJob: null
     }
 
     this.selectJob = this.selectJob.bind(this);
@@ -122,7 +126,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <Navbar user={this.state.user} updateUser={this.updateUser} />
-          <Container className={styles.container}>
+          <Container maxWidth="md" className={styles.container}>
             <Switch>
               <Route path="/profile">
                 <Profile
@@ -131,25 +135,31 @@ class App extends Component {
                 />
               </Route>
               <Route path="/add">
-                <Job updateJob={this.updateJob} user={this.state.user} />
+                <Job updateJob={this.updateJob} user={this.state.user} generatedJob={this.state.generatedJob} />
               </Route>
               <Route path="/:id">
                 <Job updateJob={this.updateJob} deleteJob={this.deleteJob} user={this.state.user} />
+              </Route>
+              <Route path="/map">
+                <JobsMap></JobsMap>
               </Route>
               <Route path="/">
               {this.state.loading ? (
                 <div className={styles.center}>
                   <CircularProgress />
                 </div>
-                ) : (<JobList
-                jobs={this.state.jobs}
-                user={this.state.user}
-                selectJob={this.selectJob}
-              />)
+                ) : (
+                  <JobList
+                    jobs={this.state.jobs}
+                    user={this.state.user}
+                    selectJob={this.selectJob}
+                  />)
               }
               </Route>
             </Switch>
           </Container>
+          {/* <JobsMap location={{"latitude": "-37.8142176",
+        "longitude": "144.9631608",}}></JobsMap> */}
         </div>
       </Router>
     )

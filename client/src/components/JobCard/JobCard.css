@@ -2,7 +2,7 @@
     color: rgba(0, 0, 0, 0.54);
     background-color: #ffffff;
     display: grid;
-    cursor: pointer;
+    /* cursor: pointer; */
     grid-template-rows: auto auto 1fr auto;
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
     border-radius: 4px;
@@ -10,25 +10,27 @@
     font-weight: 400;
     line-height: 1.43;
     letter-spacing: 0.01071em;
-    transform: scale(0.95);
+    /* transform: scale(0.95);
     transition: transform 0.2s linear,
-      box-shadow 0.2s linear;
+      box-shadow 0.2s linear; */
+      position: relative;
   }
 
   .job.failed {
     background: rgba(0,0,0,0.12);
   }
   
-  .job:hover {
+  /* .job:hover {
     transform: scale(1);
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
-  }
+  } */
   
   .address {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     border-top: 1px solid rgba(0,0,0,0.12);
+    border-bottom: 1px solid rgba(0,0,0,0.12);
     padding: 0 1rem;
   }
   
@@ -37,5 +39,44 @@
   }
   
   .content {
-    padding: 1rem;
+    padding: 0px 1rem;
+  }
+
+  .flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .description {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    padding-top: 0px;
+  }
+
+  .description > *:first-child {
+    margin-top: 0px;
+  }
+
+  .expand {
+    transform: rotate(0deg);
+    transition: transform 250ms liniar;
+  }
+
+  .expandOpen {
+    transform: rotate(180deg);
+  }
+
+  .jobMap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  a, a:hover, a:focus, a:active, a:visited {
+    color: inherit;
   }

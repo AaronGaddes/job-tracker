@@ -1,8 +1,13 @@
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25rem,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(20rem,1fr));
   grid-gap: 2rem;
   margin: 2rem 0;
+}
+
+.fullWidth {
+  grid-column-start: 1;
+  grid-column-end: -1;
 }
 
 .jobTitleGroup {

@@ -6,11 +6,16 @@ const cookieSession = require('cookie-session');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const request = require('request');
+const fetch = require('node-fetch');
 // const cookieParser = require('cookie-parser');
 
 const auth = require('./auth');
 const jobs = require('./api/jobs');
 const users = require('./api/users');
+
+const seek = require('./scrapers/seek');
+const indeed = require('./scrapers/indeed');
 
 const passportSetup = require('./config/passport-setup');
 
@@ -72,6 +77,30 @@ app.use('/auth', auth);
 app.use('/api/v1/jobs', isAuthenticated, jobs);
 app.use('/api/v1/users', isAuthenticated, users);
 
+app.post('/api/v1/generate',async(req,res,next)=>{
+    try {
+        let srcUrl = req.body.srcUrl;
+
+        let data = await fetch(srcUrl).then(res=>res.text());
+        
+        let jobDetails;
+
+        if(srcUrl.includes('seek.com')) {
+            jobDetails = seek.scrape(data,srcUrl);
+        } else if(srcUrl.includes('indeed.com')) {
+            jobDetails = await indeed.scrape(data,srcUrl);
+        }
+
+
+        res.json(jobDetails);
+    
+        
+    } catch (error) {
+        next(error);
+    }
+
+})
+
 app.use(errorHandler);
 app.use(notFound);
 
@@ -100,6 +129,22 @@ function errorHandler(err, req, res, next) {
         message: err.message,
         stack: err.stack
     });
+}
+
+function reMap(map, data) {
+    const mapEntries = Object.entries(map);
+    console.log(mapEntries);
+    
+    for (let e of mapEntries) {
+        console.log(data[e[1]], data[e[0]]);
+        
+        data[e[1]] = data[e[0]]
+        console.log(data[e[1]])
+        delete data[e[0]]
+    }
+
+    console.log('remapped', data);
+    
 }
 
 const port = process.env.PORT || 5000;

@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './JobProgress.module.css';
 import { format } from 'date-fns';
-
 export default function JobProgress(props) {
 
     let { progress, failed } = props;
@@ -15,15 +14,15 @@ export default function JobProgress(props) {
     }
 
     return(
-        <div className={`${styles.progress} ${failed ? styles.failed : ''}`}>
-            {
-                progress.map(stage => (
-                    <div
-                        key={stage.stage}
-                        className={`${styles.stage} ${stage.doneDate ? styles.done : stage.scheduledDate ? styles.scheduled : ''}`}
-                        title={stage.stage}
-                        data-date={handleShowDate(stage.doneDate || stage.scheduledDate)}
-                        ></div>))}
-        </div>
+            <div className={`${styles.progress} ${failed ? styles.failed : ''}`}>
+                {
+                    progress.map(stage => (
+                        <div
+                            key={stage.stage}
+                            className={`${styles.stage} ${stage.doneDate ? styles.done : stage.scheduledDate ? styles.scheduled : ''}`}
+                            title={stage.stage}
+                            data-date={handleShowDate(stage.doneDate || stage.scheduledDate)}
+                            ></div>))}
+            </div>
     );
 }

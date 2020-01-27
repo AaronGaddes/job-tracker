@@ -1,11 +1,19 @@
 .renumeration {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    flex: 1;
+  }
+
+  .min,.max {
+    display: flex;
   }
   
   .quoted {
     font-size: 1.5rem;
+    white-space: nowrap;
   }
   
   .quoted > .period {

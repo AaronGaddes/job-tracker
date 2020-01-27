@@ -20,7 +20,7 @@ export default function JobHeader(props) {
     
 
     return(
-        <div className="header">
+        <div className={`header ${company.location && "header-map"}`}>
             {company.logoURL == '' ? <span className="logo"><BusinessIcon /></span> :<img className="logo" src={company.logoURL}></img>}
             <div className="title">{title}
                 <div className="company">{company.name}</div>
