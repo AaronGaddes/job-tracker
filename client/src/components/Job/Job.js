@@ -349,9 +349,11 @@ function Job(props) {
         }
       });
 
-      let generatedJob = await res.json();
+      if(res.ok) {
+          let generatedJob = await res.json();
+          setJob(generatedJob);
+      }
 
-      setJob(generatedJob);
 
     } catch (error) {
       

@@ -81,16 +81,22 @@ app.post('/api/v1/generate',async(req,res,next)=>{
     try {
         let srcUrl = req.body.srcUrl;
 
-        let data = await fetch(srcUrl).then(res=>res.text());
-        
+        let data;
         let jobDetails;
-
+        
         if(srcUrl.includes('seek.com')) {
+            data = await fetch(srcUrl).then(res=>res.text());
             jobDetails = seek.scrape(data,srcUrl);
         } else if(srcUrl.includes('indeed.com')) {
+            data = await fetch(srcUrl).then(res=>res.text());
             jobDetails = await indeed.scrape(data,srcUrl);
+        } else {
+            console.log('gotten to else');
+            
+            let err = new Error('generation url not valid');
+            res.statusCode = 400;
+            next(err);
         }
-
 
         res.json(jobDetails);
     
