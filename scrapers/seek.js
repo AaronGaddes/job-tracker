@@ -52,6 +52,12 @@ const scrape = function(html, srcUrl) {
         jobDetails.description = turndownService.remove('style').turndown(descriptionHTML);
         console.log(jobDetails);
 
+        jobDetails.renumeration = {
+            min: 0,
+            max: 0,
+            quoted: 0
+        }
+
         let reg = new RegExp(/\$(([\d\.,])*)(\w?) ?-? ?\$([\d,\.]*)(\w?)/gm);
 
         if(jobDetails["Salary"]){
@@ -68,7 +74,7 @@ const scrape = function(html, srcUrl) {
         jobDetails.listingDate = jobDetails["Job Listing Date"];
         delete jobDetails["Job Listing Date"];
 
-        jobDetails.type = jobDetails["Work Type"];
+        jobDetails.type = jobDetails["Work Type"] || "Full Time";
         delete jobDetails["Work Type"];
 
         // reMap({"Job Listing Date": "listingDate", "Work Type": "type"}, jobDetails)
